@@ -1,7 +1,6 @@
 #include <pthread.h>
 #include <sys/socket.h>
 #ifdef __linux__
-#include <sys/epoll.h>
 #endif
 #include <arpa/inet.h>
 #include <string.h>
@@ -148,5 +147,28 @@ int must_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int tim
         exit(1);
     }
     return event_count;
+}
+
+int ez_epoll_ctl(int epfd, int ctl, int fd, uint32_t events)
+{
+    struct epoll_event evt;
+    evt.data.fd = fd;
+    evt.events = events;
+    return epoll_ctl(epfd, ctl, fd, &evt);
+}
+
+int ez_epoll_add(int epfd, int fd, uint32_t events)
+{
+    return ez_epoll_ctl(epfd, EPOLL_CTL_ADD, fd, events);
+}
+
+int ez_epoll_del(int epfd, int fd, uint32_t events)
+{
+    return ez_epoll_ctl(epfd, EPOLL_CTL_DEL, fd, events);
+}
+
+int ez_epoll_mod(int epfd, int fd, uint32_t events)
+{
+    return ez_epoll_ctl(epfd, EPOLL_CTL_MOD, fd, events);
 }
 #endif
