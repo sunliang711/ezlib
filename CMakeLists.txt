@@ -1,0 +1,8 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+project(ezlib)
+
+aux_source_directory(src EZSRC)
+# MESSAGE(STATUS "EZSRC: ${EZSRC}" )
+
+
+ADD_LIBRARY(${PROJECT_NAME} ${EZSRC})
