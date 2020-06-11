@@ -5,6 +5,9 @@
 #ifdef __linux__
 #include <sys/epoll.h>
 #endif
+
+#define SA struct sockaddr
+
 // thread-safe sock_ntop
 char* sock_ntop(const struct sockaddr* addr);
 
