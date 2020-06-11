@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 project(ezlib)
 
-aux_source_directory(src EZSRC)
+aux_source_directory(ezlib EZSRC)
 # MESSAGE(STATUS "EZSRC: ${EZSRC}" )
 
 
