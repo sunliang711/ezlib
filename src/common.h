@@ -11,5 +11,8 @@
 #define BUF_LEN_4k 4096
 #define BUF_LEN_8k 8192
 
+#define nullptr (void*)0
+
+
 
 #endif
