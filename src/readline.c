@@ -2,9 +2,9 @@
 #include <errno.h>
 #include <unistd.h>
 #include "readline.h"
+#include "common.h"
 
-#define MAX 255
-static char linebuf[MAX];
+static char linebuf[BUF_LEN_255];
 static size_t index;
 static char left;
 
