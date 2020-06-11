@@ -8,5 +8,6 @@
 #include "writen.h"
 #include "memory.h"
 #include "common.h"
+#include "fd.h"
 
 #endif
