@@ -2,6 +2,7 @@
 #define __COMMON_H__
 
 #define max(a,b) (a) > (b) ? (a) : (b)
+#define min(a,b) (a) < (b) ? (a) : (b)
 #define array_size(arr) sizeof((arr)) / sizeof((arr[0]))
 
 
