@@ -42,4 +42,28 @@ int ez_epoll_mod(int epfd,int fd,uint32_t events);
 #define FOREVER_SELECT NULL
 #define FOREVER_EPOLL -1
 
+typedef enum
+{
+    ipv4,
+    ipv6
+} IpVersion;
+
+/*
+* @param ver: ip protocol version, ipv4 or ipv6
+* @param ipaddress: listening ip address
+* @param port: listening port
+* @param backlog: lisiten backlog
+* @param reuse_addr: enable or disable SO_REUSEADDR option
+* @param nonblock: enable or disable nonblock of listening fd
+* @return: listening fd on success,-1 on error
+*/
+int tcp_server_init(IpVersion ver, const char *ipaddress, short port, int backlog, int reuse_addr,int nonblock);
+/*
+* @param ver: ipversion, ipv4 or ipv6
+* @param serverip: server ip address;
+* @param port: server port
+* @param nonblock: enable or disable nonblock fd
+* @return: connected fd on success,-1 on error
+*/
+int tcp_client_init(IpVersion ver, const char *serverip, short port,int nonblock);
 #endif

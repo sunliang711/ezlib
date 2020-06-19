@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 #include "socket_util.h"
+#include "fd.h"
 #include "return.h"
 
 #define MAX_LEN 255
@@ -172,3 +173,115 @@ int ez_epoll_mod(int epfd, int fd, uint32_t events)
     return ez_epoll_ctl(epfd, EPOLL_CTL_MOD, fd, events);
 }
 #endif
+
+/*
+* @param ver: ip protocol version, ipv4 or ipv6
+* @param ipaddress: listening ip address
+* @param port: listening port
+* @param backlog: lisiten backlog
+* @param reuse_addr: enable or disable SO_REUSEADDR option
+* @param nonblock: enable or disable nonblock of listening fd
+* @return: listening fd on success,-1 on error
+*/
+int tcp_server_init(IpVersion ver, const char *ipaddress, short port, int backlog, int reuse_addr, int nonblock)
+{
+    int res;
+    int af;
+    int fd;
+    int flags;
+    int enable_reuse_addr;
+    //TODO ipv6 struct sockaddr_in6
+    struct sockaddr_in addr;
+
+    switch (ver)
+    {
+    case ipv4:
+        af = AF_INET;
+        break;
+    case ipv6:
+        af = AF_INET6;
+        break;
+    default:
+        goto err;
+    }
+
+    if ((fd = socket(af, SOCK_STREAM, 0)) < 0)
+        return -1;
+
+    if (reuse_addr)
+    {
+        enable_reuse_addr = 1;
+        if ((res = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &enable_reuse_addr, sizeof(enable_reuse_addr))) != 0)
+            goto err;
+    }
+
+    bzero(&addr, sizeof(addr));
+    addr.sin_family = af;
+    addr.sin_port = htons(port);
+    if ((res = inet_pton(af, ipaddress, &addr.sin_addr)) != INET_PTON_OK)
+        goto err;
+
+    if ((res = bind(fd, (struct sockaddr *)&addr, sizeof(addr))) != BIND_OK)
+        goto err;
+
+    if ((res = listen(fd, backlog)) != LISTEN_OK)
+        goto err;
+
+    if (nonblock)
+        if ((res = make_fd_nonblock(fd)) == -1)
+            goto err;
+
+    return fd;
+
+err:
+    return -1;
+}
+
+/*
+* @param ver: ipversion, ipv4 or ipv6
+* @param serverip: server ip address;
+* @param port: server port
+* @param nonblock: enable or disable nonblock fd
+* @return: connected fd on success,-1 on error
+*/
+
+int tcp_client_init(IpVersion ver, const char *serverip, short port, int nonblock)
+{
+    int fd;
+    int res;
+    int af;
+    //TODO ipv6 struct sockaddr_in6
+    struct sockaddr_in sin;
+
+    switch (ver)
+    {
+    case ipv4:
+        af = AF_INET;
+        break;
+    case ipv6:
+        af = AF_INET6;
+    default:
+        goto err;
+    }
+
+    if ((fd = socket(af, SOCK_STREAM, 0)) < 0)
+        goto err;
+
+    bzero(&sin, sizeof(sin));
+    sin.sin_family = af;
+    sin.sin_port = htons(port);
+    if ((res = inet_pton(af, serverip, &sin.sin_addr)) != INET_PTON_OK)
+        goto err;
+
+    if ((res = connect(fd, (struct sockaddr *)&sin, sizeof(sin))) != CONNECT_OK)
+        goto err;
+
+    if (nonblock)
+        if ((res = make_fd_nonblock(fd)) == -1)
+            goto err;
+
+    return fd;
+
+err:
+    return -1;
+}
