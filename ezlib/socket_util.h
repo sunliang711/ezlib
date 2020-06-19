@@ -46,9 +46,10 @@ typedef enum
 {
     ipv4,
     ipv6
-} IpVersion;
+} ipversion;
 
 /*
+* tcp_server_init creates a listener socket bind to (ipaddress,port)
 * @param ver: ip protocol version, ipv4 or ipv6
 * @param ipaddress: listening ip address
 * @param port: listening port
@@ -57,13 +58,14 @@ typedef enum
 * @param nonblock: enable or disable nonblock of listening fd
 * @return: listening fd on success,-1 on error
 */
-int tcp_server_init(IpVersion ver, const char *ipaddress, short port, int backlog, int reuse_addr,int nonblock);
+int tcp_server_init(ipversion ver, const char *ipaddress, short port, int backlog, int reuse_addr,int nonblock);
 /*
+* tcp_client_init creates a client socket connected to (serverip,port)
 * @param ver: ipversion, ipv4 or ipv6
 * @param serverip: server ip address;
 * @param port: server port
 * @param nonblock: enable or disable nonblock fd
 * @return: connected fd on success,-1 on error
 */
-int tcp_client_init(IpVersion ver, const char *serverip, short port,int nonblock);
+int tcp_client_init(ipversion ver, const char *serverip, short port,int nonblock);
 #endif
