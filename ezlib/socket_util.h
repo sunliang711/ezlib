@@ -31,12 +31,14 @@ void must_inet_pton(int af, const char *src, void *dst);
 void must_getsockname(int fd, struct sockaddr *addr, socklen_t *len);
 
 #ifdef __linux__
+/*
 int must_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);
-#endif
-
+*/
+int ez_epoll_ctl(int epfd, int ctl, int fd, uint32_t events);
 int ez_epoll_add(int epfd,int fd,uint32_t events);
 int ez_epoll_del(int epfd,int fd,uint32_t events);
 int ez_epoll_mod(int epfd,int fd,uint32_t events);
+#endif
 
 #define FOREVER_POLL -1
 #define FOREVER_SELECT NULL

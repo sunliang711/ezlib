@@ -138,6 +138,7 @@ sock_ntop(const struct sockaddr *addr)
 }
 
 #ifdef __linux__
+/*
 int must_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
 {
     int event_count;
@@ -149,6 +150,7 @@ int must_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int tim
     }
     return event_count;
 }
+*/
 
 int ez_epoll_ctl(int epfd, int ctl, int fd, uint32_t events)
 {
